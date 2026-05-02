@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStream</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <!-- header -->
+    <header>
+      <div class="logo">CineStream</div>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Movies</a></li>
+          <li><a href="#">TV Shows</a></li>
+          <li><a href="#">Favorites</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- hero -->
+    <section class="hero">
+      <h1>Welcome to CineStream</h1>
+      <p>Discover and save your favorite movies</p>
+    </section>
+
+    <!-- might refactor this into a component later -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search for a movie...">
+      <button id="searchBtn">Search</button>
+    </div>
+
+    <!-- movie grid -->
+    <main>
+      <h2>Popular Movies</h2>
+      <div class="movies-grid" id="moviesGrid">
+        <div class="movie-card">
+          <img
+            src="assets/no-poster.png"
+            onerror="this.src = 'https://placehold.co/300x450'"
+            alt="">
+          <h3>Interstellar</h3>
+          <p class="year">2014</p>
+          <p class="rating">★ 8.6</p>
+          <button class="favorite-btn">Favorite</button>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2026 CineStream</p>
+      <p>Powered by <a href="https://www.themoviedb.org">TMDB</a></p>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>

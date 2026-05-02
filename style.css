@@ -1,0 +1,198 @@
+/* CineStream styles */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0c0f14;
+  --surface: #161a22;
+  --card: #1c2130;
+  --accent: #e63946;
+  --accent-hover: #ff4d5a;
+  --text: #eaeaea;
+  --muted: #9ca3af;
+  --radius: 10px;
+  --transition: 0.2s ease;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* header */
+header {
+  background: var(--surface);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+.logo {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.8rem;
+}
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+nav a:hover { color: var(--text); }
+
+/* hero */
+.hero {
+  text-align: center;
+  padding: 3.5rem 1rem 2rem;
+  background: linear-gradient(180deg, #1a1f2b 0%, var(--bg) 100%);
+}
+.hero h1 { font-size: 2.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+.hero p { color: var(--muted); font-size: 1.15rem; }
+
+/* search */
+.search-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem 1rem;
+  max-width: 550px;
+  margin: 0 auto;
+  width: 100%;
+}
+#searchInput {
+  flex: 1;
+  padding: 0.75rem 1.2rem;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  transition: border var(--transition);
+}
+#searchInput:focus { border-color: var(--accent); }
+#searchInput::placeholder { color: var(--muted); }
+#searchBtn {
+  padding: 0.75rem 1.6rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+#searchBtn:hover { background: var(--accent-hover); }
+
+/* movies */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  width: 100%;
+  flex: 1;
+}
+main h2 { font-size: 1.5rem; margin-bottom: 1.5rem; font-weight: 600; }
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+/* card */
+.movie-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  transition: transform var(--transition), box-shadow var(--transition);
+  display: flex;
+  flex-direction: column;
+}
+.movie-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.6);
+}
+.movie-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+  background: #1e2433;
+}
+.movie-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.7rem 0.75rem 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.movie-card .year { font-size: 0.82rem; color: var(--muted); margin: 0 0.75rem; }
+.movie-card .rating {
+  font-size: 0.85rem;
+  color: #f5c518;
+  margin: 0.15rem 0.75rem 0.6rem;
+  font-weight: 500;
+}
+.favorite-btn {
+  margin: auto 0.75rem 0.85rem;
+  padding: 0.5rem 0;
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.favorite-btn:hover { background: var(--accent); color: #fff; }
+
+/* footer */
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
+footer a:hover { text-decoration: underline; }
+
+/* responsive */
+@media (max-width: 768px) {
+  nav ul { gap: 1.2rem; }
+  .hero h1 { font-size: 1.9rem; }
+  .movies-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+}
+
+@media (max-width: 600px) {
+  header { flex-direction: column; gap: 0.6rem; padding: 1rem; }
+  .search-container { flex-direction: column; padding: 1rem; }
+  #searchBtn { width: 100%; }
+  /* tried justify-content: flex-start here but center looks better on mobile */
+  footer { gap: 0.75rem; }
+}
