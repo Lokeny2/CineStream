@@ -12,6 +12,9 @@
   --muted: #9ca3af;
   --radius: 10px;
   --transition: 0.2s ease;
+  /* Shimmer effect colors for skeletons */
+  --shimmer-base: #1c2130;
+  --shimmer-highlight: #252b3d;
 }
 
 body {
@@ -54,8 +57,16 @@ nav a {
   font-weight: 500;
   font-size: 0.95rem;
   transition: color 0.2s ease;
+  padding-bottom: 4px; /* Space for the active border */
+  border-bottom: 2px solid transparent;
 }
 nav a:hover { color: var(--text); }
+
+
+nav a.active {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
 
 /* hero */
 .hero {
@@ -70,25 +81,39 @@ nav a:hover { color: var(--text); }
 .search-container {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem; 
   padding: 1.5rem 1rem 1rem;
-  max-width: 550px;
+  max-width: 700px; 
   margin: 0 auto;
   width: 100%;
 }
-#searchInput {
-  flex: 1;
-  padding: 0.75rem 1.2rem;
-  border: 2px solid transparent;
-  border-radius: var(--radius);
+#searchInput, #genreFilter {
   background: var(--card);
   color: var(--text);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.75rem 1.2rem;
   font-size: 1rem;
   outline: none;
   transition: border var(--transition);
 }
-#searchInput:focus { border-color: var(--accent); }
+
+#searchInput { flex: 2; }
+
+
+#genreFilter {
+  flex: 1;
+  cursor: pointer;
+  appearance: none; /* Removes default browser styling */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%239ca3af' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  padding-right: 2.5rem;
+}
+
+#searchInput:focus, #genreFilter:focus { border-color: var(--accent); }
 #searchInput::placeholder { color: var(--muted); }
+
 #searchBtn {
   padding: 0.75rem 1.6rem;
   background: var(--accent);
@@ -115,6 +140,23 @@ main h2 { font-size: 1.5rem; margin-bottom: 1.5rem; font-weight: 600; }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
+}
+
+/*Skeleton Shimmer Animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, 
+    var(--shimmer-base) 25%, 
+    var(--shimmer-highlight) 50%, 
+    var(--shimmer-base) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: var(--radius);
 }
 
 /* card */
@@ -193,6 +235,5 @@ footer a:hover { text-decoration: underline; }
   header { flex-direction: column; gap: 0.6rem; padding: 1rem; }
   .search-container { flex-direction: column; padding: 1rem; }
   #searchBtn { width: 100%; }
-  /* tried justify-content: flex-start here but center looks better on mobile */
   footer { gap: 0.75rem; }
 }
