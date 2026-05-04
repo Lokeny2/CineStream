@@ -12,7 +12,11 @@ const searchBtn = document.getElementById("searchBtn");
 const sectionTitle =
   document.getElementById("sectionTitle") || document.querySelector("main h2");
 
-// Persistent state for user favorites stored in the browser[cite: 1]
+// Navigation selectors
+const navHome = document.getElementById("navHome");
+const navFavs = document.getElementById("navFavs");
+
+// Persistent state for user favorites stored in the browser
 let favourites = JSON.parse(localStorage.getItem("cineFavs")) || [];
 
 function getPoster(path) {
@@ -52,7 +56,7 @@ async function fetchMovies(endpoint, query = "") {
     const data = await res.json();
     return data.results;
   } catch (err) {
-    // Return null to distinguish network/API failures from "zero results"[cite: 1]
+    // Return null to distinguish network/API failures from "zero results"
     console.error("fetch failed:", err);
     return null;
   }
@@ -74,8 +78,12 @@ function renderMovies(movies, title = "Popular Movies") {
   }
 
   if (movies.length === 0) {
-    moviesGrid.innerHTML =
-      '<p class="no-results">No movies found for this search.</p>';
+    // Empty state message
+    const message =
+      title === "Your Favorites"
+        ? "You haven't saved any favorites yet."
+        : "No movies found for this search.";
+    moviesGrid.innerHTML = `<p class="no-results">${message}</p>`;
     return;
   }
 
@@ -99,7 +107,12 @@ function renderMovies(movies, title = "Popular Movies") {
     const favBtn = card.querySelector(".favorite-btn");
     favBtn.addEventListener("click", () => {
       toggleFav(movie);
-      favBtn.textContent = isFav(movie.id) ? "♥ Favourited" : "♡ Favourite";
+      // Refresh grid if unfavoriting while in the Favorites view
+      if (sectionTitle.textContent === "Your Favorites") {
+        renderMovies(favourites, "Your Favorites");
+      } else {
+        favBtn.textContent = isFav(movie.id) ? "♥ Favourited" : "♡ Favourite";
+      }
     });
 
     moviesGrid.appendChild(card);
@@ -128,3 +141,18 @@ searchBtn.addEventListener("click", searchHandler);
 searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") searchHandler();
 });
+
+// Event Listeners for Favorites navigation
+if (navHome) {
+  navHome.addEventListener("click", (e) => {
+    e.preventDefault();
+    loadPopular();
+  });
+}
+
+if (navFavs) {
+  navFavs.addEventListener("click", (e) => {
+    e.preventDefault();
+    renderMovies(favourites, "Your Favorites");
+  });
+}
