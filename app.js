@@ -6,6 +6,7 @@ const IMG_BASE = "https://image.tmdb.org/t/p/w342";
 const PLACEHOLDER = "https://placehold.co/300x450?text=No+Poster";
 
 const moviesGrid = document.getElementById("moviesGrid");
+
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 
@@ -41,9 +42,6 @@ function toggleFav(movie) {
   saveFavourites();
 }
 
-/*
-Only append search inqueries
- */
 async function fetchMovies(endpoint, query = "") {
   try {
     let url = `${BASE_URL}${endpoint}?api_key=${API_KEY}&language=en-US&page=1`;
@@ -57,15 +55,11 @@ async function fetchMovies(endpoint, query = "") {
     const data = await res.json();
     return data.results;
   } catch (err) {
-    // Return null to distinguish network/API failures from "zero results"
     console.error("fetch failed:", err);
     return null;
   }
 }
 
-/*
- renders movies or shows error/empty state.
- */
 function renderMovies(movies, title = "Popular Movies") {
   if (sectionTitle) sectionTitle.textContent = title;
 
@@ -90,7 +84,6 @@ function renderMovies(movies, title = "Popular Movies") {
     const card = document.createElement("div");
     card.className = "movie-card";
 
-    // Support both Movies (title/release_date) and TV Shows (name/first_air_date)
     const displayTitle = movie.title || movie.name;
     const date = movie.release_date || movie.first_air_date;
     const year = date ? date.slice(0, 4) : "—";
@@ -109,8 +102,8 @@ function renderMovies(movies, title = "Popular Movies") {
     const favBtn = card.querySelector(".favorite-btn");
     favBtn.addEventListener("click", () => {
       toggleFav(movie);
-      // Refresh grid if unfavoriting while in the Favorites view
-      if (sectionTitle.textContent === "Your Favorites") {
+      // Safe check using optional chaining
+      if (sectionTitle?.textContent === "Your Favorites") {
         renderMovies(favourites, "Your Favorites");
       } else {
         favBtn.textContent = isFav(movie.id) ? "♥ Favourited" : "♡ Favourite";
@@ -140,7 +133,7 @@ async function loadPopular() {
 // Event Listeners
 window.addEventListener("DOMContentLoaded", loadPopular);
 searchBtn.addEventListener("click", searchHandler);
-searchInput.addEventListener("keypress", (e) => {
+searchInput.addEventListener("keyup", (e) => {
   if (e.key === "Enter") searchHandler();
 });
 
