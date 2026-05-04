@@ -14,9 +14,10 @@ const sectionTitle =
 
 // Navigation selectors
 const navHome = document.getElementById("navHome");
+const navMovies = document.getElementById("navMovies");
+const navTV = document.getElementById("navTV");
 const navFavs = document.getElementById("navFavs");
 
-// Persistent state for user favorites stored in the browser
 let favourites = JSON.parse(localStorage.getItem("cineFavs")) || [];
 
 function getPoster(path) {
@@ -62,9 +63,8 @@ async function fetchMovies(endpoint, query = "") {
   }
 }
 
-/**
- * Handling the DOM manipulation for the movie grid.
- * Managing three distinct UI states: Error, Empty, and Success.
+/*
+ renders movies or shows error/empty state.
  */
 function renderMovies(movies, title = "Popular Movies") {
   if (sectionTitle) sectionTitle.textContent = title;
@@ -78,7 +78,6 @@ function renderMovies(movies, title = "Popular Movies") {
   }
 
   if (movies.length === 0) {
-    // Empty state message
     const message =
       title === "Your Favorites"
         ? "You haven't saved any favorites yet."
@@ -91,12 +90,15 @@ function renderMovies(movies, title = "Popular Movies") {
     const card = document.createElement("div");
     card.className = "movie-card";
 
-    const year = movie.release_date ? movie.release_date.slice(0, 4) : "—";
+    // Support both Movies (title/release_date) and TV Shows (name/first_air_date)
+    const displayTitle = movie.title || movie.name;
+    const date = movie.release_date || movie.first_air_date;
+    const year = date ? date.slice(0, 4) : "—";
     const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "N/A";
 
     card.innerHTML = `
-      <img src="${getPoster(movie.poster_path)}" alt="${movie.title}">
-      <h3>${movie.title}</h3>
+      <img src="${getPoster(movie.poster_path)}" alt="${displayTitle}">
+      <h3>${displayTitle}</h3>
       <p class="year">${year}</p>
       <p class="rating">★ ${rating}</p>
       <button class="favorite-btn" data-id="${movie.id}">
@@ -142,11 +144,26 @@ searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") searchHandler();
 });
 
-// Event Listeners for Favorites navigation
 if (navHome) {
   navHome.addEventListener("click", (e) => {
     e.preventDefault();
     loadPopular();
+  });
+}
+
+if (navMovies) {
+  navMovies.addEventListener("click", (e) => {
+    e.preventDefault();
+    loadPopular();
+  });
+}
+
+if (navTV) {
+  navTV.addEventListener("click", async (e) => {
+    e.preventDefault();
+    moviesGrid.innerHTML = '<p class="loading">Loading TV shows...</p>';
+    const shows = await fetchMovies("/tv/popular");
+    renderMovies(shows, "Popular TV Shows");
   });
 }
 
