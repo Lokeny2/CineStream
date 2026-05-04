@@ -20,6 +20,7 @@ const navTV = document.getElementById("navTV");
 const navFavs = document.getElementById("navFavs");
 
 let favourites = JSON.parse(localStorage.getItem("cineFavs")) || [];
+let searchTimer;
 
 function getPoster(path) {
   return path ? `${IMG_BASE}${path}` : PLACEHOLDER;
@@ -42,6 +43,27 @@ function toggleFav(movie) {
   saveFavourites();
 }
 
+/*
+ Active Nav state
+ */
+function updateActiveNav(activeId) {
+  document.querySelectorAll("nav a").forEach((link) => {
+    link.classList.toggle("active", link.id === activeId);
+  });
+}
+
+/*
+ Skeleton Loaders
+ */
+function showSkeletons() {
+  moviesGrid.innerHTML = Array(10)
+    .fill('<div class="movie-card skeleton" style="height: 400px;"></div>')
+    .join("");
+}
+
+/*
+Only append search inqueries
+ */
 async function fetchMovies(endpoint, query = "") {
   try {
     let url = `${BASE_URL}${endpoint}?api_key=${API_KEY}&language=en-US&page=1`;
@@ -120,19 +142,30 @@ async function searchHandler() {
     loadPopular();
     return;
   }
+  showSkeletons(); // UI Feedback while searching
   const results = await fetchMovies("/search/movie", query);
   renderMovies(results, `Search Results for "${query}"`);
 }
 
 async function loadPopular() {
-  moviesGrid.innerHTML = '<p class="loading">Loading movies...</p>';
+  showSkeletons();
   const movies = await fetchMovies("/movie/popular");
   renderMovies(movies, "Popular Movies");
 }
 
 // Event Listeners
-window.addEventListener("DOMContentLoaded", loadPopular);
+window.addEventListener("DOMContentLoaded", () => {
+  updateActiveNav("navHome");
+  loadPopular();
+});
+
 searchBtn.addEventListener("click", searchHandler);
+
+searchInput.addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(searchHandler, 500);
+});
+
 searchInput.addEventListener("keyup", (e) => {
   if (e.key === "Enter") searchHandler();
 });
@@ -140,6 +173,7 @@ searchInput.addEventListener("keyup", (e) => {
 if (navHome) {
   navHome.addEventListener("click", (e) => {
     e.preventDefault();
+    updateActiveNav("navHome");
     loadPopular();
   });
 }
@@ -147,6 +181,7 @@ if (navHome) {
 if (navMovies) {
   navMovies.addEventListener("click", (e) => {
     e.preventDefault();
+    updateActiveNav("navMovies");
     loadPopular();
   });
 }
@@ -154,7 +189,8 @@ if (navMovies) {
 if (navTV) {
   navTV.addEventListener("click", async (e) => {
     e.preventDefault();
-    moviesGrid.innerHTML = '<p class="loading">Loading TV shows...</p>';
+    updateActiveNav("navTV");
+    showSkeletons();
     const shows = await fetchMovies("/tv/popular");
     renderMovies(shows, "Popular TV Shows");
   });
@@ -163,6 +199,7 @@ if (navTV) {
 if (navFavs) {
   navFavs.addEventListener("click", (e) => {
     e.preventDefault();
+    updateActiveNav("navFavs");
     renderMovies(favourites, "Your Favorites");
   });
 }
